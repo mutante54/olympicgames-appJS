@@ -1,7 +1,7 @@
 import { Injectable, HttpException } from '@nestjs/common';
-import { classPrivateMethod } from '../../../../../Users/jeffe/AppData/Local/Microsoft/TypeScript/4.4/node_modules/@babel/types/lib/index';
-import { Competition } from './competition';
-import { CompetitionException } from './competition.exception';
+import { CompetitionFindException } from './competition-find.exception';
+import { CompetitionGenericException } from './competition-generic.exception';
+import { CompetitionCreateException } from './competition-create.exception';
 import { competitionsConstants } from './competitions.constants';
 
 @Injectable()
@@ -15,8 +15,41 @@ export class CompetitionsService {
    * Obtem todas as competições cadastradas
    * @returns Lista de Competition
    */
-  findAll() {
-    return this.competitionsArray;
+  findAll(filters) {
+
+    try {
+
+      let compResult = new Array();
+      // único filtro aceito no momento: modalidade
+      let sportType = filters != null ? filters.sportType : null;
+
+      // aplicando filtros conforme solicitação do cliente
+      if (sportType && sportType.length > 0) {
+        compResult = this.competitionsArray.filter((comp) => {
+          return comp.sportType === sportType
+        });
+
+        if (compResult.length == 0) {
+          throw new CompetitionFindException("Não foi possível encontrar competições para a modalidade -> " + sportType);
+        }
+      } else {
+        // sem filtros
+        compResult = this.competitionsArray;
+      }
+
+      if (compResult.length > 0) {
+        // ordenação pela data de início da competição
+        return compResult.sort((comp1, comp2) => (comp1.dateTimeStarts > comp2.dateTimeStarts) ? 1 : ((comp2.dateTimeStarts > comp1.dateTimeStarts) ? -1 : 0));
+      } else {
+        throw new CompetitionFindException("Não existem competições cadastradas");
+      }
+    } catch (error) {
+      if (error instanceof CompetitionFindException) {
+        throw error;
+      } else {
+        throw new CompetitionGenericException('Ocorreu um erro inesperado ao consultar as competições: ' + error);
+      }
+    }
   }
 
   /**
@@ -28,11 +61,11 @@ export class CompetitionsService {
     try {
 
       if (!competitionsConstants.SPORT_TYPES.includes(competition.sportType)) {
-        throw new CompetitionException('Modalidade informada é inválida -> ' + competition.sportType);
+        throw new CompetitionCreateException('Modalidade informada é inválida -> ' + competition.sportType);
       }
 
       if (!competitionsConstants.STAGE_TYPES.includes(competition.stageType)) {
-        throw new CompetitionException('Etapa informada para o evento é inválida -> ' + competition.stageType);
+        throw new CompetitionCreateException('Etapa informada para o evento é inválida -> ' + competition.stageType);
       }
 
       let eventDateStarts = new Date(competition.dateTimeStarts);
@@ -46,7 +79,7 @@ export class CompetitionsService {
       */
       if (competition.competitionStageType !== competitionsConstants.STAGE_TYPE_SEMIFINAL && competition.competitionStageType !== competitionsConstants.STAGE_TYPE_FINAL) {
         if (competition.nation1 === competition.nation2) {
-          throw new CompetitionException('O evento não permite disputa entre o mesmo país nesta etapa da competição');
+          throw new CompetitionCreateException('O evento não permite disputa entre o mesmo país nesta etapa da competição');
         }
       }
 
@@ -56,7 +89,7 @@ export class CompetitionsService {
       diffMinutes = Math.abs(diff);
 
       if (diffMinutes < 30) {
-        throw new CompetitionException('O evento não pode possuir menos de 30 minutos de duração');
+        throw new CompetitionCreateException('O evento não pode possuir menos de 30 minutos de duração');
       }
 
       /*
@@ -72,7 +105,7 @@ export class CompetitionsService {
       )[0];
 
       if (compDuplicated != null) {
-        throw new CompetitionException('Já existe outro evento ocorrendo no mesmo período -> ' + JSON.stringify(compDuplicated));
+        throw new CompetitionCreateException('Já existe outro evento ocorrendo no mesmo período -> ' + JSON.stringify(compDuplicated));
       }
 
       // Para evitar problemas, a organização das olimpíadas que limitar a no máximo 4 competições por dia num mesmo local*/
@@ -82,7 +115,7 @@ export class CompetitionsService {
       ).length;
 
       if (countCompSameDay >= competitionsConstants.LIMIT_COMP_COUNT_BY_PLACE) {
-        throw new CompetitionException('Limite de competições excedido para o mesmo dia e local');
+        throw new CompetitionCreateException('Limite de competições excedido para o mesmo dia e local');
       }
 
       competition.dateTimeStarts = eventDateStarts;
@@ -92,14 +125,12 @@ export class CompetitionsService {
       this.competitionsArray.push(competition);
 
     } catch (error) {
-      if (error instanceof CompetitionException) {
+      if (error instanceof CompetitionCreateException) {
         throw error;
       } else {
-        throw new CompetitionException('Ocorreu um erro inesperado ao realizar a requisição: ' + error);
+        throw new CompetitionGenericException('Ocorreu um erro inesperado ao criar a competição: ' + error);
       }
     }
   }
-
-
 
 }

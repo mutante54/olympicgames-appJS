@@ -1,6 +1,5 @@
-import { Controller, Dependencies, Post, Body, Get, Bind, UseFilters } from '@nestjs/common';
+import { Controller, Dependencies, Post, Body, Get, Bind, UseFilters, Query } from '@nestjs/common';
 import { HttpExceptionFilter } from '../http-exception.filter';
-import { CompetitionException } from './competition.exception';
 import { CompetitionsService } from './competitions.service';
 
 @Controller('competitions')
@@ -15,8 +14,9 @@ export class CompetitionsController {
      * Retorna todas as competições cadastradas
      */
     @Get()
-    findAll() {
-        return this.competitionsService.findAll();
+    @Bind(Query())
+    findAll(query) {
+        return this.competitionsService.findAll(query);
     }
 
     /**

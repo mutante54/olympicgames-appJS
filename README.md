@@ -1,11 +1,15 @@
 # olympicgames-appJS
-Projeto Jogos Olímpicos
+Projeto Jogos Olímpicos - Desenvolvido com NestJS
+
+**Atenção**:
+*Esta aplicação não se conecta a um servidor de banco de dados.*
+*Todos os dados são armazenados e gerenciados pela própria instância da aplicação (in-memory).*
 
 ## Instalação
 
 ```bash
 $ npm install
-```
+
 ## Executando a Aplicação
 
 ```bash
@@ -29,8 +33,6 @@ $ npm run test
 # e2e tests
 $ npm run test:e2e
 
-# test coverage
-$ npm run test:cov
 ```
 
 ## Funcionalidades
@@ -55,3 +57,7 @@ Realizar requisição POST ("application/JSON") para o endpoint "/competitions":
 ### Retornar Todas as Competições
 
 Realizar requisição GET para o endpoint "/competitions".
+
+Opcionalmente, é possível adicionar filtro para o tipo de modalidade:
+
+"/competitions?sportType=BASKETBALL"

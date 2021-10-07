@@ -1,18 +1,24 @@
-import { Test } from '@nestjs/testing';
 import { CompetitionsController } from './competitions.controller';
+import { CompetitionsService } from './competitions.service';
 
-describe('Users Controller', () => {
-  let controller;
+/**
+ * Teste unitário para o controller de competições
+ */
 
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      controllers: [CompetitionsController],
-    }).compile();
+describe('CompetitionsController', () => {
 
-    controller = module.get(CompetitionsController);
+  let compController;
+  let compService;
+
+  beforeEach(() => {
+    compService = new CompetitionsService();
+    compController = new CompetitionsController(compService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('should return an array of comps', async () => {
+    const result = ['test'];
+    jest.spyOn(compService, 'findAll').mockImplementation(() => result);
+
+    expect(await compController.findAll()).toBe(result);
   });
 });
