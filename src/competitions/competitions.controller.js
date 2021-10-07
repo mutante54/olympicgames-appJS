@@ -1,4 +1,6 @@
-import { Controller, Dependencies, Post, Body, Get, Bind } from '@nestjs/common';
+import { Controller, Dependencies, Post, Body, Get, Bind, UseFilters } from '@nestjs/common';
+import { HttpExceptionFilter } from '../http-exception.filter';
+import { CompetitionException } from './competition.exception';
 import { CompetitionsService } from './competitions.service';
 
 @Controller('competitions')
@@ -22,8 +24,9 @@ export class CompetitionsController {
      * @param {*} competition 
      */
     @Post()
+    @UseFilters(new HttpExceptionFilter())
     @Bind(Body())
-    save(competition) {
+    create(competition) {
         this.competitionsService.save(competition);
     }
 }

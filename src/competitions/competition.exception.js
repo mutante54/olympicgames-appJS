@@ -1,4 +1,4 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 /**
  * Exception especializada para o módulo de competições

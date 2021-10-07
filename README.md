@@ -6,7 +6,7 @@ Projeto Jogos Olímpicos
 ```bash
 $ npm install
 ```
-## Executando APP
+## Executando a Aplicação
 
 ```bash
 # development
@@ -44,14 +44,14 @@ Realizar requisição POST ("application/JSON") para o endpoint "/competitions":
 {
    "sportType":"SOCCER",
    "eventPlace":"Final Stadium",
-   "dateTimeStarts":"30/09/2021 10:00:00",
-   "dateTimeFinish":"30/09/2021 11:00:00",
+   "dateTimeStarts":"Wed, 06 Oct 2021 20:00:00 GMT-0300",
+   "dateTimeFinish":"Wed, 06 Oct 2021 20:30:00 GMT-0300",
    "nation1":"Brazil",
    "nation2":"Japan",
-   "competitionStageType":"Final"
+   "stageType":"FINAL"
 }
 ```
 
-### Retornar todas as competições
+### Retornar Todas as Competições
 
 Realizar requisição GET para o endpoint "/competitions".
