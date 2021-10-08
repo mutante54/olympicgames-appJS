@@ -1,5 +1,5 @@
 # olympicgames-appJS
-Projeto Jogos Olímpicos - Desenvolvido com NestJS
+Projeto Jogos Olímpicos - Desenvolvido com NestJS/ Javascript
 
 **Atenção**:
 *Esta aplicação não se conecta a um servidor de banco de dados.*
